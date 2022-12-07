@@ -21,6 +21,7 @@ The program will queue your webhooks and sends them when the rate limit is over.
    }
    ```
 4. Run the exectuable
+5. Put in the `http://localhost:PORT` (printed in the CLI) as webhook url in your bot
 
 ### Settings.json explanation
 
