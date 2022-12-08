@@ -7,12 +7,23 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"webhook-queue/src/helper/cli"
 	"webhook-queue/src/helper/log"
 	"webhook-queue/src/types"
 )
 
-func StartQueue(port int, webhook string, alias string) {
+var queues []types.QueueObject
+
+func StartQueue(port int, webhook string, alias string, integer int) {
 	var queue []interface{}
+
+	queues = append(queues, types.QueueObject{
+		Alias:   alias,
+		Webhook: webhook,
+		Length:  len(queue),
+	})
+
+	cli.RenameCLI(queues)
 
 	//handle the requests
 	http.HandleFunc("/"+alias, func(w http.ResponseWriter, r *http.Request) {
@@ -26,6 +37,9 @@ func StartQueue(port int, webhook string, alias string) {
 
 			//add the webhook to the queue
 			queue = append(queue, body)
+
+			queues[integer].Length = len(queue)
+			cli.RenameCLI(queues)
 
 			//send a response
 			w.WriteHeader(http.StatusOK)
@@ -47,17 +61,17 @@ func StartQueue(port int, webhook string, alias string) {
 			//always only send the first webhook in the queue
 			if index == 0 {
 				//send the webhook
-				SendWebhook(queue[index].([]byte), webhook, alias)
+				SendWebhook(queue[index].([]byte), webhook, alias, integer)
 				//remove the webhook from the queue
 				queue = queue[1:]
-
-				log.Info("Webhook in queue:"+strconv.Itoa(len(queue)), alias)
 			}
 		}
+
+		cli.RenameCLI(queues)
 	}
 }
 
-func SendWebhook(webhook []byte, url string, alias string) {
+func SendWebhook(webhook []byte, url string, alias string, integer int) {
 	//make a new http client
 	client := &http.Client{}
 
@@ -99,6 +113,8 @@ func SendWebhook(webhook []byte, url string, alias string) {
 		time.Sleep(time.Duration(int(ratelimitResponse.Retry_after*1000)) * time.Millisecond)
 
 		//send the webhook again
-		SendWebhook(webhook, url, alias)
+		SendWebhook(webhook, url, alias, integer)
+	} else {
+		queues[integer].Length = queues[integer].Length - 1
 	}
 }

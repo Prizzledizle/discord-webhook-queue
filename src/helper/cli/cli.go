@@ -5,6 +5,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strconv"
+
+	"webhook-queue/src/types"
 
 	"github.com/fatih/color"
 )
@@ -36,4 +39,30 @@ func PrintHeader() {
 | |/ |/ /_____/ /_/ / /_/ /  __/ /_/ /  __/
 |__/|__/      \___\_\__,_/\___/\__,_/\___/ `))
 	fmt.Print("\n")
+}
+
+func RenameCLI(queues []types.QueueObject) {
+	var cmd *exec.Cmd
+
+	nameString := ""
+
+	if len(queues) == 0 {
+		nameString = " | No Queues"
+	} else {
+		for i := range queues {
+			nameString += " | " + queues[i].Alias + ": " + strconv.Itoa(queues[i].Length)
+		}
+	}
+
+	switch os := runtime.GOOS; os {
+	case "darwin":
+		cmd = exec.Command("osascript", "-e", `tell application "Terminal" to set custom title of first window to "W-Queue`+nameString+`"`)
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "title", "W-Queue"+nameString)
+	default:
+		panic("OS not supported")
+	}
+
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }

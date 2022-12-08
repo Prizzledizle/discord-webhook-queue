@@ -23,13 +23,14 @@ func main() {
 
 	cli.ClearCLI()
 	cli.PrintHeader()
+	cli.RenameCLI([]types.QueueObject{})
 
 	// read the settngs.json file
 	settings := readSettings()
 
 	for i := range settings.Webhooks {
 		//start the webhook queue
-		go webhook_queue.StartQueue(settings.Port, settings.Webhooks[i].Webhook, settings.Webhooks[i].Alias)
+		go webhook_queue.StartQueue(settings.Port, settings.Webhooks[i].Webhook, settings.Webhooks[i].Alias, i)
 	}
 
 	go http.ListenAndServe(":"+strconv.Itoa(settings.Port), nil)
