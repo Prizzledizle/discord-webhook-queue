@@ -15,13 +15,22 @@ The program will queue your webhooks and sends them when the rate limit is over.
     
     this is an example:
    ```json
-   {
-        "webhook": "https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz",
-        "port": 8080,
-   }
+     {
+          "webhooks": [
+               {
+                    "webhook": "https://discord.com/api/webhooks/123456789/abc",
+                    "alias": "MyWebhook"
+               },
+               {
+                    "webhook": "https://discord.com/api/webhooks/123456789/abc",
+                    "alias": "MyWebhook2"
+               }
+          ],
+          "port": 8080
+     }
    ```
 4. Run the exectuable
-5. Put in the `http://localhost:PORT` (printed in the CLI) as webhook url in your bot
+5. Put in the `http://localhost:PORT/ALIAS` (printed in the CLI) as webhook url in your bot
 6. Make sure to test once! :heart:
 
 ### Settings.json explanation
@@ -30,6 +39,7 @@ The program will queue your webhooks and sends them when the rate limit is over.
 | --- | --- | --- |
 | webhook | The discord webhook you want to use | String |
 | port | The port the server will run on | Integer |
+| alias | The alias of the webhook, make sure not use spaces | String |
 
 ## Got any questions?
 Feel free to DM me on Discord (Prizzle#4655), on [Twitter](https://twitter.com/bypassedpx) or open an issue on this repo.
