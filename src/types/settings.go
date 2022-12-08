@@ -1,6 +1,9 @@
 package types
 
 type Settings struct {
-	Webhook string `json:"webhook"`
-	Port    int    `json:"port"`
+	Webhooks []struct {
+		Webhook string `json:"webhook"`
+		Alias   string `json:"alias"`
+	} `json:"webhooks"`
+	Port int `json:"port"`
 }
