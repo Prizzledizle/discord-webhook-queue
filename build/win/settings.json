@@ -1,4 +1,14 @@
 {
-    "webhook" : "https://discord.com/api/webhooks/...",
-    "port" : 8080
+    "webhooks": [
+        {
+            "webhook": "https://discord.com/api/webhooks/...",
+            "alias": "My Webhook",
+            "port": 8080
+        },
+        {
+            "webhook": "https://discord.com/api/webhooks/...",
+            "alias": "My Webhook 2",
+            "port": 8081
+        }
+    ]
 }
